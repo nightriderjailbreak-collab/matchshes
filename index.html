@@ -79,7 +79,6 @@
 
 <script>
 
-// 🔥 YOUR FULL DATA FROM EXCEL
 let users = [
 {name:"Yuvika Sharma",class:"IX-A",password:"y1",personality:"Vihaan Mittal",looks:"Vihaan Mittal",weight:50},
 {name:"Mayra Gupta",class:"IX-A",password:"m2",personality:"Biraaj Dabas",looks:"Vihaan Mittal",weight:75},
@@ -97,13 +96,13 @@ let users = [
 {name:"Vihaan Mittal",class:"IX-B",password:"v14",personality:"Myra Sharad",looks:"Yuvika Sharma",weight:80},
 {name:"Myra Sharad",class:"IX-B",password:"m15",personality:"Vihaan Bhamri",looks:"Vihaan Mittal",weight:80},
 {name:"Khushal Bhambri",class:"IX-B",password:"k16",personality:"Myra Sharad",looks:"Myra Sharad",weight:60},
-{name:"Utkarsh",class:"IX-B",password:"u17",personality:"Reeti",looks:"Reeti",weight:90}
+{name:"Utkarsh",class:"IX-B",password:"u17",personality:"Reeti",looks:"Reeti",weight:90},
+{name:"Vihaan Bhamri",class:"IX-B",password:"vb18",personality:"Myra Sharad",looks:"Yuvika Sharma",weight:80}
 ];
 
 let matches = {};
 let matched = new Set();
 
-// LOGIN
 function login() {
   let name = document.getElementById("name").value.toLowerCase();
   let cls = document.getElementById("class").value;
@@ -123,7 +122,6 @@ function login() {
   showMatch(user);
 }
 
-// 💡 SMART MATCHING
 function score(a, b) {
   let p = (a.personality === b.name) ? 1 : 0;
   let l = (a.looks === b.name) ? 1 : 0;
@@ -161,7 +159,6 @@ function showMatch(user) {
   display(best.name, bestScore);
 }
 
-// DISPLAY
 function display(name, percent) {
   document.getElementById("loginBox").style.display = "none";
   document.getElementById("resultBox").style.display = "block";
@@ -175,7 +172,6 @@ function display(name, percent) {
   hearts();
 }
 
-// ❤️ ANIMATION
 function hearts() {
   for (let i = 0; i < 20; i++) {
     let h = document.createElement("div");
