@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Friend Match 💖</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      overflow: hidden;
+    }
+
+    .box {
+      background: white;
+      padding: 25px;
+      margin: 80px auto;
+      width: 320px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: fadeIn 1s ease;
+    }
+
+    input, button {
+      margin: 8px;
+      padding: 10px;
+      width: 90%;
+      border-radius: 8px;
+    }
+
+    button {
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #result {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .percentage {
+      font-size: 18px;
+      color: #ff4d6d;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .heart {
+      position: absolute;
+      animation: float 5s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-800px); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="box" id="loginBox">
+  <h2>Login 💖</h2>
+  <input id="name" placeholder="Name">
+  <input id="class" placeholder="Class">
+  <input id="password" placeholder="Password">
+  <button onclick="login()">Find Match ❤️</button>
+  <p id="error"></p>
+</div>
+
+<div class="box" id="resultBox" style="display:none;">
+  <h2>Your Match 💕</h2>
+  <p id="result"></p>
+  <div class="percentage" id="percent"></div>
+</div>
+
+<script>
+
+// 🔥 YOUR FULL DATA FROM EXCEL
+let users = [
+{name:"Yuvika Sharma",class:"IX-A",password:"y1",personality:"Vihaan Mittal",looks:"Vihaan Mittal",weight:50},
+{name:"Mayra Gupta",class:"IX-A",password:"m2",personality:"Biraaj Dabas",looks:"Vihaan Mittal",weight:75},
+{name:"Tanvi Gautam",class:"IX-A",password:"t3",personality:"Ishaan Singh",looks:"Vihaan Bhamri",weight:70},
+{name:"Dishika",class:"IX-A",password:"d4",personality:"Biraaj Dabas",looks:"Biraaj Dabas",weight:100},
+{name:"Biraaj Dabas",class:"IX-A",password:"b5",personality:"Dishika",looks:"Dishika",weight:100},
+{name:"Aarav Kapoor",class:"IX-B",password:"a6",personality:"Sanah Kapoor",looks:"Sanah Kapoor",weight:80},
+{name:"Madhav",class:"IX-A",password:"m7",personality:"Chaarvi",looks:"Chaarvi",weight:80},
+{name:"Dhruva",class:"IX-C",password:"d8",personality:"Khushal Bhambri",looks:"Vihaan Bhamri",weight:80},
+{name:"Ritwik",class:"IX-D",password:"r9",personality:"Gouranshi",looks:"Gouranshi",weight:80},
+{name:"Kiaan",class:"IX-A",password:"k10",personality:"Yuvika Sharma",looks:"Myra Sharad",weight:80},
+{name:"Pranav",class:"IX-C",password:"p11",personality:"Yuvika Sharma",looks:"Myra Sharad",weight:80},
+{name:"Gouranshi",class:"IX-A",password:"g12",personality:"Ritwik",looks:"Ritwik",weight:80},
+{name:"Naitik",class:"IX-D",password:"n13",personality:"Yuvika Sharma",looks:"Yuvika Sharma",weight:80},
+{name:"Vihaan Mittal",class:"IX-B",password:"v14",personality:"Myra Sharad",looks:"Yuvika Sharma",weight:80},
+{name:"Myra Sharad",class:"IX-B",password:"m15",personality:"Vihaan Bhamri",looks:"Vihaan Mittal",weight:80},
+{name:"Khushal Bhambri",class:"IX-B",password:"k16",personality:"Myra Sharad",looks:"Myra Sharad",weight:60},
+{name:"Utkarsh",class:"IX-B",password:"u17",personality:"Reeti",looks:"Reeti",weight:90}
+];
+
+let matches = {};
+let matched = new Set();
+
+// LOGIN
+function login() {
+  let name = document.getElementById("name").value.toLowerCase();
+  let cls = document.getElementById("class").value;
+  let pass = document.getElementById("password").value;
+
+  let user = users.find(u => 
+    u.name.toLowerCase() === name &&
+    u.class === cls &&
+    u.password === pass
+  );
+
+  if (!user) {
+    document.getElementById("error").innerText = "Wrong details!";
+    return;
+  }
+
+  showMatch(user);
+}
+
+// 💡 SMART MATCHING
+function score(a, b) {
+  let p = (a.personality === b.name) ? 1 : 0;
+  let l = (a.looks === b.name) ? 1 : 0;
+
+  return (p * a.weight) + (l * (100 - a.weight));
+}
+
+function showMatch(user) {
+
+  let best = null;
+  let bestScore = -1;
+
+  for (let u of users) {
+    if (u.name === user.name || matched.has(u.name)) continue;
+
+    let s = score(user, u);
+
+    if (s > bestScore) {
+      bestScore = s;
+      best = u;
+    }
+  }
+
+  if (!best || Math.random() > 0.8) {
+    display("No match 😢", 0);
+    return;
+  }
+
+  matches[user.name] = best.name;
+  matches[best.name] = user.name;
+
+  matched.add(user.name);
+  matched.add(best.name);
+
+  display(best.name, bestScore);
+}
+
+// DISPLAY
+function display(name, percent) {
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("resultBox").style.display = "block";
+
+  document.getElementById("result").innerText = name;
+
+  if (percent > 0) {
+    document.getElementById("percent").innerText = "Match: " + percent + "% 💘";
+  }
+
+  hearts();
+}
+
+// ❤️ ANIMATION
+function hearts() {
+  for (let i = 0; i < 20; i++) {
+    let h = document.createElement("div");
+    h.innerText = "❤️";
+    h.className = "heart";
+    h.style.left = Math.random()*100+"vw";
+    h.style.fontSize = (Math.random()*20+10)+"px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+  }
+}
+
+</script>
+</body>
+</html>
